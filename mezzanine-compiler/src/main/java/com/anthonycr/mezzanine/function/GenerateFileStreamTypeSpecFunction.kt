@@ -19,6 +19,11 @@ object GenerateFileStreamTypeSpecFunction : (Pair<TypeElement, String>) -> TypeS
      */
     private const val MAX_LENGTH = 65534
 
+    /**
+     * String constants cannot exceed 65535 bytes in size.
+     */
+    private const val MAX_BYTES_SIZE = 65535
+
     override fun invoke(fileStreamPair: Pair<TypeElement, String>): TypeSpec {
         val fileContent = fileStreamPair.second
 
@@ -40,17 +45,27 @@ object GenerateFileStreamTypeSpecFunction : (Pair<TypeElement, String>) -> TypeS
             var count = 0
             var start = 0
             while (start < src.length) {
-                val end = if (start + MAX_LENGTH >= src.length) {
+                // make sure the String length does not exceed 65534
+                var end = if (start + MAX_LENGTH >= src.length) {
                     src.length
                 } else {
                     src.offsetByCodePoints((start + MAX_LENGTH + 1).coerceAtMost(src.length - 1), -1)
                 }
-                val content = StringEscapeUtils.escapeJava(src.substring(start, end))
+                var content = src.substring(start, end)
+                // In general, a String with length 65534 has 65535 bytes.
+                // But there are still exceptions, make sure the String size in byte does not exceed 65535.
+                val size = content.toByteArray(Charsets.UTF_8).size
+                if (size > MAX_BYTES_SIZE) {
+                    val safeEnd = end.coerceAtMost(src.length - 1)
+                    end = src.offsetByCodePoints(safeEnd, -(size - MAX_BYTES_SIZE))
+                    content = src.substring(start, end)
+                }
+
                 val methodSpec = MethodSpec
                         .methodBuilder("__$name$count")
                         .addModifiers(Modifier.PRIVATE)
                         .returns(String::class.java)
-                        .addCode("return \"$1L\";\n", content)
+                        .addCode("return \"$1L\";\n", StringEscapeUtils.escapeJava(content))
                         .build()
                 methodList.add(methodSpec)
                 start = end
