@@ -1,9 +1,7 @@
 # Mezzanine
 An annotation processor that allows you to read static UTF-8 files synchronously.
 
-[![Build Status](https://travis-ci.org/anthonycr/Mezzanine.svg?branch=master)](https://travis-ci.org/anthonycr/Mezzanine)
-[![Download](https://api.bintray.com/packages/anthonycr/android/com.anthonycr.mezzanine%3Amezzanine/images/download.svg)](https://bintray.com/anthonycr/android/com.anthonycr.mezzanine%3Amezzanine)
-[![codecov](https://codecov.io/gh/anthonycr/Mezzanine/branch/dev/graph/badge.svg)](https://codecov.io/gh/anthonycr/Mezzanine)
+[![](https://jitpack.io/v/Edsuns/Mezzanine.svg)](https://jitpack.io/#Edsuns/Mezzanine)
 
 ### What does this do?
 Android apps often need to read in a default configuration file on startup and change functionality based on the contents of the configuration file. A convenient, frequently used way to store this configuration file is in assets, and then to read out of this file on startup. This can mean doing expensive disk I/O on the main thread, which increases startup times. You can get around the additional I/O by pasting the contents of the file into a `String` constant, but this can make code review difficult.
@@ -17,7 +15,7 @@ Note: There is a hard limit set by the javac compiler where `String` constants c
 ```groovy
 allprojects {
     repositories {
-        bintray()
+        maven { url 'https://jitpack.io' }
     }
 }
 ```
@@ -25,9 +23,9 @@ allprojects {
 ##### Android/Java
 ```groovy
 dependencies {
-  def mezzanineVersion = '1.1.1'
-  compile "com.anthonycr.mezzanine:mezzanine:$mezzanineVersion"
-  annotationProcessor "com.anthonycr.mezzanine:mezzanine-compiler:$mezzanineVersion"
+  def mezzanineVersion = '1.2.1'
+  compile "com.github.Edsuns.Mezzanine:mezzanine:$mezzanineVersion"
+  annotationProcessor "com.github.Edsuns.Mezzanine:mezzanine-compiler:$mezzanineVersion"
 }
 
 android {
@@ -48,9 +46,9 @@ android {
 apply plugin: 'kotlin-kapt'
 
 dependencies {
-  def mezzanineVersion = '1.1.1'
-  compile "com.anthonycr.mezzanine:mezzanine:$mezzanineVersion"
-  kapt "com.anthonycr.mezzanine:mezzanine-compiler:$mezzanineVersion"
+  def mezzanineVersion = '1.2.1'
+  compile "com.github.Edsuns.Mezzanine:mezzanine:$mezzanineVersion"
+  kapt "com.github.Edsuns.Mezzanine:mezzanine-compiler:$mezzanineVersion"
 }
 
 kapt {
@@ -67,9 +65,9 @@ plugins {
 }
 
 dependencies {
-    def mezzanineVersion = '1.1.1'
-    compile "com.anthonycr.mezzanine:mezzanine:$mezzanineVersion"
-    apt "com.anthonycr.mezzanine:mezzanine-compiler:$mezzanineVersion"
+    def mezzanineVersion = '1.2.1'
+    compile "com.github.Edsuns.Mezzanine:mezzanine:$mezzanineVersion"
+    apt "com.github.Edsuns.Mezzanine:mezzanine-compiler:$mezzanineVersion"
 }
 
 gradle.projectsEvaluated {
